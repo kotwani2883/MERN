@@ -2,21 +2,20 @@ const dotenv=require("dotenv");
 const express=require('express');
 const app=express();
 const mongoose=require('mongoose')
+const User=require('./model/userSchema');
+
 
 dotenv.config({path:'./config.env'});
 //MIDDleware
+require('./db/conn');
 
-const DB =process.env.DATABASE;
+app.use(express.json());
+
+app.use(require('./router/auth'));
+
+
 const PORT=process.env.PORT;
 
-mongoose.connect(DB,{
-useNewUrlParser:true,
-useCreateIndex:true,
-useUnifiedTopology:true,
-useFindAndModify:false
-}).then(()=>{
-    console.log('Database Connected!!');
-}).catch((err)=>console.log("no connection"));
 
 const middleware=(req,res,next)=>{
     console.log('Holla MIDDLEWARE');
@@ -27,6 +26,7 @@ const middleware=(req,res,next)=>{
 app.get('/',(req,res)=>{
   res.send("HELLO WORLD")
 });
+
 app.get('/about',middleware,(req,res)=>{
     console.log("ABOUT");
     res.send("Hello from about us Page!!");
